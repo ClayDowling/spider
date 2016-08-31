@@ -37,4 +37,5 @@ struct pin_setting digital_write_history(int ptr)
 	if (ptr < PIN_PTR) {
 		return PIN_HISTORY[ptr];
 	}
+	return empty;
 }
