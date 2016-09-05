@@ -2,11 +2,6 @@
 
 #define MOCK_DEPTH 10
 
-struct pin_setting {
-	int pin;
-	int value;
-};
-
 struct pin_setting PIN_HISTORY[MOCK_DEPTH];
 int PIN_PTR = 0;
 
