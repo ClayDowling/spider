@@ -1,6 +1,6 @@
 #include "mockpi.h"
 
-#define MOCK_DEPTH 10
+#define MOCK_DEPTH 20
 
 struct pin_setting PIN_HISTORY[MOCK_DEPTH];
 int PIN_PTR = 0;
