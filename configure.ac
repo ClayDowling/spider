@@ -1,0 +1,21 @@
+AC_PREREQ([2.59])
+AC_INIT([Spider], [0.1], [clay@lazarusid.com])
+AM_PROG_AR
+
+AM_INIT_AUTOMAKE([-Wall -Werror])
+
+AC_PROG_CC
+AC_PROG_LIBTOOL
+
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.6])
+AM_PROG_CC_C_O
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([libgpio.h])
+
+AC_CONFIG_HEADERS([config.h])
+
+AC_CONFIG_FILES([Makefile])
+
+AC_OUTPUT
