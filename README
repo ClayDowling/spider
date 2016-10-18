@@ -1,0 +1,82 @@
+====== Spider Controller =====
+
+This spider controller is designed to run on FreeBSD from a Raspberry PI, using
+the FreeBSD gpio library.  The following hardware setup is assumed:
+
+1. Raspberry Pi controller running FreeBSD.
+2. Nema 17 bipolar stepper motor or equivalent.
+3. A4988 stepper motor driver module. 
+   * Direction and Step pins are connected to digital output pins of the
+     Raspberry Pi.
+   * Coil driver pins are connected to the stepper motor.
+   * 12v 2a power supply is connected to the input voltage pins.  
+
+4. Cable spool is attached to the axle of the stepper motor.  
+
+5. The cable is run through an eye hook attached to the carrier for the spool
+and motor.  
+
+6. A hook for attaching the decoration is attached to the end of the cable, on
+the other side of the eye hook from the cable spool.  
+
+7. A normally open limit switch connected to a digital input pin of the
+raspberry pi, and positioned so that the hook will close the limit switch
+before the hook engages the eye hook.  
+
+8.  Two normally open momentary switches are connected to the raspberry pi for
+raising and lowering the hook.  
+
+9. A single pole double throw switch is attached to the raspberry pi for
+alternating between run and and setup modes.
+
+===== Controller Functions =====
+
+==== Manual Raise ====
+
+In setup mode this will draw the line into the cable spool so long as the Up switch is closed.
+
+==== Manual Lower ====
+
+In setup mode this will extend the line from the cable spool so long as the Down switch is closed.
+
+==== Learning ====
+
+When mode switch is set to *Run* the learning function is engaged.  This will
+raise the cable until the limit switch is closed.  The number of steps will be
+recorded as RUNSTEPS.  Control now switches to the Plan function.
+
+==== Plan ====
+
+The plan mode will determine the following factors randomly:
+
+  * INITIALDELAY - the number of seconds to wait before starting a raise-lower
+    cycle.
+  * DISTANCE - Expressed as a percentage of RUNSTEPS, the available options are
+    ONEQUARTER, HALF, THREEQUARTER and FULL.
+  * SPEED - Available options are SLOW and FAST
+  * CHANGEDELAY - the number of seconds to wait between RUNLOWER and RUNRAISE
+    operations.
+
+==== RUNLOWER ====
+
+Winds cable out of the spool for DISTANCE * RUNSTEPS steps.
+
+==== RUNRAISE ====
+
+If DISTANCE == FULL, wind cable into spool until the limit switch is closed.
+Otherwise wind cable into spool for DISTANCE * RUNSTEPS steps. 
+
+===== Modes =====
+
+In setup mode, the program loop is:
+
+  1. Wait for input.
+  2. Act on Manual Raise or Manual Lower input.
+
+In run mode, the program loop is:
+
+  1. Plan
+  2. Initial Delay
+  3. RUNLOWER
+  4. Change Delay
+  5. RUNRAISE
