@@ -8,7 +8,12 @@ int initialized = 0;
 unsigned LIMIT_PIN = 7;
 unsigned STEP_PIN = 8;
 unsigned DIR_PIN = 9;
+
+unsigned RUNSTEPS = 0;
 gpio_handle_t handle = 0;
+
+void step_motor(void);
+void initialize(void);
 
 void initialize()
 {
@@ -30,6 +35,7 @@ void initialize()
 
 int motor_up()
 {
+	initialize();
 	if (gpio_pin_get(handle, LIMIT_PIN) == GPIO_VALUE_LOW) {
 		step_motor();
 		return 0;
@@ -39,6 +45,7 @@ int motor_up()
 
 int motor_down()
 {
+	initialize();
 	step_motor();
 	return 0;
 }
@@ -49,3 +56,10 @@ void step_motor()
 	gpio_pin_set(handle, STEP_PIN, GPIO_PIN_LOW);
 }
 
+int motor_memorize_height()
+{
+	RUNSTEPS = 0;
+	while(!motor_up()) {
+		++RUNSTEPS;
+	}
+}
