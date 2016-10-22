@@ -4,17 +4,15 @@
 #ifndef _SETUP_H_
 #define _SETUP_H_
 
-extern unsigned int RUNSTEPS;
-extern unsigned int INITIALDELAY;
+#include <stdint.h>
+#include <libgpio.h>
 
 enum distance_e {QUARTER, HALF, THREEQUARTERS, FULL};
 typedef enum distance_e distance_t;
 
-extern distance_t DISTANCE;
-
 enum speed_e {SLOW, FAST, SPEED_MAX};
 typedef enum speed_t speed_t;
 
-extern speed_t SPEED;
+gpio_handle_t HANDLE;
 
 #endif

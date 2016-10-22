@@ -15,6 +15,10 @@ unsigned CHANGE_DELAY = 0;
 enum distance {DIST_ONEQUARTER=1, DIST_HALF, DIST_THREEQUARTER, DIST_FULL} DISTANCE = DIST_FULL;
 enum speed {SPEED_SLOW, SPEED_FAST, SPEED_MAX} SPEED = SPEED_FAST;
 
+unsigned UP_PIN = 4;
+unsigned DOWN_PIN = 5;
+unsigned MODE_PIN = 6;
+
 command_status_t manual_raise() {
 	motor_up();
 	return COMMAND_FINISHED;
@@ -122,3 +126,27 @@ command_status_t change_delay()
 {
 	return delay(CHANGE_DELAY);
 }
+
+command_status_t mode_setup()
+{
+	gpio_value_t up;
+	gpio_value_t down;
+	gpio_value_t mode = GPIO_VALUE_LOW;
+
+	mode = gpio_pin_get(handle, MODE_PIN);
+	while(mode = GPIO_VALUE_LOW) {
+		up = gpio_pin_get(handle, UP_PIN);
+		down = gpio_pin_get(handle, DOWN_PIN);
+
+		if (GPIO_VALUE_HIGH == up) {
+			manual_raise();
+		} else if (GPIO_VALUE_HIGH == down) {
+			manual_lower();
+		}
+
+		mode = gpio_pin_get(handle, MODE_PIN);
+	}
+
+	return COMMAND_FINISHED;
+}
+

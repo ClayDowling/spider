@@ -14,7 +14,7 @@ unsigned	DIR_PIN = 9;
 struct timespec	lastpulse;
 unsigned	PULSE_MIN_INTERVAL = 20000;
 
-gpio_handle_t	handle = 0;
+gpio_handle_t	HANDLE = 0;
 
 void		step_motor(void);
 void		initialize(void);
@@ -23,16 +23,16 @@ void
 initialize()
 {
 	if (!initialized) {
-		handle = gpio_open(0);
-		if (handle == GPIO_INVALID_HANDLE) {
+		HANDLE = gpio_open(0);
+		if (HANDLE == GPIO_INVALID_HANDLE) {
 			err(EXIT_FAILURE, "gpio_open failed");
 		}
-		gpio_pin_input(handle, LIMIT_PIN);
+		gpio_pin_input(HANDLE, LIMIT_PIN);
 		//Without a pulldow resistor on the circuit the pin
-			// will flicker on and off randomly.
-			gpio_pin_pulldown(handle, LIMIT_PIN);
-		gpio_pin_output(handle, STEP_PIN);
-		gpio_pin_output(handle, LIMIT_PIN);
+		// will flicker on and off randomly.
+		gpio_pin_pulldown(HANDLE, LIMIT_PIN);
+		gpio_pin_output(HANDLE, STEP_PIN);
+		gpio_pin_output(HANDLE, LIMIT_PIN);
 		lastpulse.tv_sec = 0;
 		lastpulse.tv_nsec = 0;
 
@@ -69,7 +69,7 @@ int
 motor_up()
 {
 	initialize();
-	if (gpio_pin_get(handle, LIMIT_PIN) == GPIO_VALUE_LOW) {
+	if (gpio_pin_get(HANDLE, LIMIT_PIN) == GPIO_VALUE_LOW) {
 		step_motor();
 		return 0;
 	}
@@ -107,8 +107,8 @@ void
 step_motor()
 {
 	if (motor_canstep()) {
-		gpio_pin_set(handle, STEP_PIN, GPIO_PIN_HIGH);
-		gpio_pin_set(handle, STEP_PIN, GPIO_PIN_LOW);
+		gpio_pin_set(HANDLE, STEP_PIN, GPIO_PIN_HIGH);
+		gpio_pin_set(HANDLE, STEP_PIN, GPIO_PIN_LOW);
 	}
 }
 
