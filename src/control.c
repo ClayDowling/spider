@@ -64,7 +64,7 @@ command_status_t runlower()
 		TARGET_STEP = RUNSTEPS;
 	}
 
-	if (CURRENT_STEP < RUNSTEPS) {
+	if (CURRENT_STEP > RUNSTEPS && motor_canstep()) {
 		motor_down();
 		return COMMAND_INPROGRESS;
 	}
@@ -82,7 +82,7 @@ command_status_t runraise()
 		TARGET_STEP = 0.25 * DISTANCE * RUNSTEPS;
 	}
 
-	if (CURRENT_STEP < TARGET_STEP) {
+	if (CURRENT_STEP < TARGET_STEP && motor_canstep()) {
 		if (motor_up()) {
 			goto raisedone;
 		}
@@ -94,3 +94,31 @@ raisedone:
 	return COMMAND_FINISHED;
 }
 
+command_status_t delay(unsigned interval)
+{
+	static int in_delay = 0;
+	static time_t delay_started = 0;
+
+	if (0 == in_initial_delay) {
+		in_initial_delay = 1;
+		delay_started = time(0);
+		return COMMAND_INPROGRESS;
+	}
+
+	if (time(0)  < (delay_started + interval)) {
+		return COMMAND_INPROGRESS;
+	}
+
+	in_delay = 0;
+	return COMMAND_FINISHED;
+}
+
+command_status_t initial_delay()
+{
+	return delay(INITIAL_DELAY);
+}
+
+command_status_t change_delay()
+{
+	return delay(CHANGE_DELAY);
+}
