@@ -1,3 +1,5 @@
+#include <stdint.h>
+#include <stdlib.h>
 #include <libgpio.h>
 #include "control.h"
 #include "motor.h"
@@ -38,7 +40,7 @@ command_status_t learning()
 		return COMMAND_FINISHED;
 	}
 
-	++RUNSTEP;
+	++RUNSTEPS;
 	return COMMAND_INPROGRESS;
 }
 
@@ -77,5 +79,18 @@ command_status_t runraise()
 
 	if (0 == in_runraise) {
 		in_runraise = 1;
-		TARGET_STEP = 0.25 * DISTANCE * RUNSTEPS
+		TARGET_STEP = 0.25 * DISTANCE * RUNSTEPS;
+	}
+
+	if (CURRENT_STEP < TARGET_STEP) {
+		if (motor_up()) {
+			goto raisedone;
+		}
+		return COMMAND_INPROGRESS;
+	}
+
+raisedone:
+	in_runraise = 0;
+	return COMMAND_FINISHED;
 }
+
