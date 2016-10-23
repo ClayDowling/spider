@@ -133,10 +133,10 @@ command_status_t mode_setup()
 	gpio_value_t down;
 	gpio_value_t mode = GPIO_VALUE_LOW;
 
-	mode = gpio_pin_get(handle, MODE_PIN);
+	mode = gpio_pin_get(HANDLE, MODE_PIN);
 	while(mode = GPIO_VALUE_LOW) {
-		up = gpio_pin_get(handle, UP_PIN);
-		down = gpio_pin_get(handle, DOWN_PIN);
+		up = gpio_pin_get(HANDLE, UP_PIN);
+		down = gpio_pin_get(HANDLE, DOWN_PIN);
 
 		if (GPIO_VALUE_HIGH == up) {
 			manual_raise();
@@ -144,7 +144,7 @@ command_status_t mode_setup()
 			manual_lower();
 		}
 
-		mode = gpio_pin_get(handle, MODE_PIN);
+		mode = gpio_pin_get(HANDLE, MODE_PIN);
 	}
 
 	return COMMAND_FINISHED;
